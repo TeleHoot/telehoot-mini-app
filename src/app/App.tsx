@@ -1,27 +1,20 @@
-import { type FC, Suspense, useEffect, useState } from "react";
+import { type FC, Suspense } from "react";
 import { AppRouter } from "./providers/AppRouter/AppRouter";
-import WebApp from '@twa-dev/sdk';
+import { QueryClient, QueryClientProvider } from "react-query";
+import React from "react";
 
+const queryClient = new QueryClient();
 
 const App: FC = () => {
-  const [webApp, setWebApp] = useState<typeof WebApp| null>(null);
-
-  useEffect(() => {
-    const tgWebApp = WebApp;
-    setWebApp(tgWebApp);
-
-
-    // Инициализация приложения
-    tgWebApp.ready();
-
-    // Расширяем приложение на весь экран (опционально)
-    tgWebApp.expand();
-  }, []);
 
   return (
-    <Suspense fallback={''}>
-      <AppRouter />
-    </Suspense>
+    <React.StrictMode>
+      <QueryClientProvider client={queryClient}>
+        <Suspense fallback={""}>
+          <AppRouter />
+        </Suspense>
+      </QueryClientProvider>
+    </React.StrictMode>
   );
 };
 
