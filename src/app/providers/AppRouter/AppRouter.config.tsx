@@ -35,20 +35,9 @@ export const ProtectedRoute = (): ReactNode => {
 
   useEffect(() => {
     if (WebApp?.initDataUnsafe) {
-      const initDataUnsafe = WebApp?.initDataUnsafe;
+      const initDataUnsafe = WebApp?.initData;
 
-      console.log(initDataUnsafe)
-
-      const user = {
-        username: initDataUnsafe.user?.username,
-        first_name: initDataUnsafe.user?.first_name,
-        photo_url: initDataUnsafe.user?.photo_url,
-        id: Number(initDataUnsafe.user?.id),
-        auth_date: Number(initDataUnsafe.auth_date),
-        hash: initDataUnsafe.hash,
-      };
-
-      mutation.mutate(user)
+      mutation.mutate(initDataUnsafe);
     }
   }, [WebApp]);
 
