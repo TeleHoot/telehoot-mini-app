@@ -1,9 +1,11 @@
-import { Outlet, RouteObject } from "react-router-dom";
+import { Navigate, Outlet, RouteObject } from "react-router-dom";
 import { createContext, FC, LazyExoticComponent, ReactNode, Suspense, useEffect, useState } from "react";
-import { auth, getMe, TelegramUser, User } from "@entity/User";
+import { auth, getMe, User } from "@entity/User";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { Main } from "@pages/Main";
 import WebApp from "@twa-dev/sdk";
+import { Welcome } from "@pages/Welcome";
+import { Quiz } from "@pages/Quiz";
 
 const ToLazy = (LazyComponent: LazyExoticComponent<FC>): ReactNode => (
   <Suspense fallback={""}>
@@ -18,12 +20,16 @@ export const ProtectedRoute = (): ReactNode => {
 
   const queryClient = useQueryClient();
 
-  const mutation = useMutation<void, Error, TelegramUser>(
+  const { isLoading, data } = useQuery({
+    queryKey: ["auth"],
+    queryFn: getMe,
+  });
+
+  const mutation = useMutation<void, Error, string>(
     "auth",
     auth,
     {
       onSuccess: () => {
-        console.log('dsadsadasdsadaddasdsdsadsadsa');
         queryClient.invalidateQueries("auth");
       },
       onError: (error: Error) => {
@@ -41,13 +47,13 @@ export const ProtectedRoute = (): ReactNode => {
     }
   }, [WebApp]);
 
-  if (mutation.isLoading) {
+  if (mutation.isLoading || isLoading) {
     return <>Loading...</>;
   }
 
   return (
     <div className="min-h-screen flex flex-col">
-      <AuthContext.Provider value={mutation.data?.data}>
+      <AuthContext.Provider value={data?.data}>
         <main className="flex-1">
           <Outlet />
         </main>
@@ -55,14 +61,32 @@ export const ProtectedRoute = (): ReactNode => {
     </div>);
 };
 
+export const RedirectToMain = (): ReactNode => {
+  const isUser = localStorage.getItem("user");
+
+  if (!isUser)
+    return <Navigate to={"/Welcome"} />;
+  else
+    return <Navigate to={"/Main"} />;
+};
+
 export const ROUTES: RouteObject[] = [
   {
     path: "/",
     element: <ProtectedRoute />,
-    children: [],
-  },
-  {
-    path: "/login",
-    element: ToLazy(Main),
+    children: [{
+      path: "/",
+      element: <RedirectToMain/>,
+    }, {
+        path: "/Welcome",
+        element: ToLazy(Welcome),
+      },{
+        path: "/Main",
+        element: ToLazy(Main),
+      },{
+        path: "/Quiz",
+        element: ToLazy(Quiz),
+      },
+    ],
   },
 ];

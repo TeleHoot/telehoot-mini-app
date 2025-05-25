@@ -1,4 +1,3 @@
-import type { TelegramLoginData } from "@feature/TelegramLogin";
 import { api } from "@shared/api";
 import { User } from "@entity/User/User.types";
 
