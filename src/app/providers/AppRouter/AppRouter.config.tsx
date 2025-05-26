@@ -6,6 +6,7 @@ import { Main } from "@pages/Main";
 import WebApp from "@twa-dev/sdk";
 import { Welcome } from "@pages/Welcome";
 import { Quiz } from "@pages/Quiz";
+import { Loader2 } from "lucide-react";
 
 const ToLazy = (LazyComponent: LazyExoticComponent<FC>): ReactNode => (
   <Suspense fallback={""}>
@@ -48,11 +49,15 @@ export const ProtectedRoute = (): ReactNode => {
   }, [WebApp]);
 
   if (mutation.isLoading || isLoading) {
-    return <>Loading...</>;
+    return (
+      <div className="flex items-center justify-center h-screen bg-[#F1F1F1]">
+        <Loader2 className="h-12 w-12 animate-spin text-[#0D0BCC]" />
+      </div>
+    );
   }
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-[#F1F1F1]">
       <AuthContext.Provider value={data?.data}>
         <main className="flex-1">
           <Outlet />

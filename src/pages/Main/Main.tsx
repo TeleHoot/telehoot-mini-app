@@ -32,7 +32,6 @@ const Main = () => {
     },
   });
 
-
   const handleJoinQuiz = async () => {
     if(quizCode.length === 4) {
       navigate("/Quiz?quizCode=" + quizCode);
@@ -41,8 +40,6 @@ const Main = () => {
 
   const openScanner = () => {
     setIsScannerOpen(true);
-    // Здесь можно добавить логику для сканера QR кода
-    // Например, использовать WebView для вызова нативного сканера
     tg.showScanQrPopup({
       text: "Наведите камеру на QR-код",
     }, (text: string) => {
@@ -52,66 +49,98 @@ const Main = () => {
   };
 
   return (
-    <div className="p-4 space-y-6" style={{
-      backgroundColor: "var(--tg-theme-bg-color)",
-      color: "var(--tg-theme-text-color)",
+    <div className="p-4 space-y-6 bg-[#F1F1F1]" style={{
       minHeight: "100vh",
     }}>
       {/* Приветствие */}
       <div className="space-y-1">
-        <h1 className="text-2xl font-bold">Привет, @{authContext?.username}!</h1>
-        <p className="text-muted-foreground" style={{ color: "var(--tg-theme-hint-color)" }}>
-          Добро пожаловать в наше приложение
-        </p>
+        <h1 className="text-[20px] text-[#18191B] font-semibold">👋🏻 Привет, {authContext?.username}!</h1>
       </div>
 
       {/* Заголовок "Квизы" с кнопкой сканера */}
       <div className="flex items-center justify-between">
-        <h2 className="text-xl font-semibold">Квизы</h2>
+        <h2 className="text-[24px] font-semibold text-[#18191B]">Квизы</h2>
         <Button
-          variant="outline"
-          size="icon"
           onClick={openScanner}
           style={{
-            backgroundColor: "var(--tg-theme-secondary-bg-color)",
-            color: "var(--tg-theme-text-color)",
+            width: '130px',
+            height: '35px',
+            minWidth: '50px',
+            gap: '5px',
+            borderRadius: '20px',
+            padding: '15px 10px',
+            border: '1px solid #0D0BCC',
+            fontFamily: 'Inter',
+            fontWeight: 500,
+            fontSize: '14px',
+            lineHeight: '22px',
+            letterSpacing: '-0.4px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            backgroundColor: "transparent",
+            color: "#0D0BCC",
           }}
         >
-          <Scan className="h-4 w-4" />
+          <Scan className="h-4 w-4 mr-1" />
+          QR-код
         </Button>
       </div>
 
       {/* Карточка для подключения */}
-      <Card className="p-4 space-y-4" style={{
-        backgroundColor: "var(--tg-theme-secondary-bg-color)",
+      <div className="p-4 space-y-4 rounded-lg" style={{
+        backgroundColor: "#E5EAF2",
       }}>
         <div className="space-y-2">
-          <h3 className="font-medium">Присоединиться к квизу</h3>
-          <p className="text-sm text-muted-foreground" style={{ color: "var(--tg-theme-hint-color)" }}>
-            Введите код квиза или отсканируйте QR-код
+          <h3 className="font-medium text-[16px] text-[#18191B]">Войти по коду</h3>
+          <p className="text-[14px] text-[#707579]">
+            Узнать код можно у организатора
           </p>
         </div>
-        <div className="flex space-x-2">
+        <div className="space-y-2">
           <Input
-            placeholder="Код квиза"
+            placeholder="Введите 4-значный код"
             value={quizCode}
             onChange={(e) => setQuizCode(e.target.value)}
+            className="w-full"
             style={{
-              backgroundColor: "var(--tg-theme-bg-color)",
-              color: "var(--tg-theme-text-color)",
+              backgroundColor: "#FFFFFF",
+              color: "#707579",
+              border: 'none',
+              boxShadow: 'none',
+              height: '40px',
+              borderRadius: '10px',
+              padding: '15px 12px',
+              fontFamily: 'Inter',
+              fontSize: '14px',
             }}
           />
           <Button
             onClick={handleJoinQuiz}
+            className="w-full mt-1"
             style={{
-              backgroundColor: "var(--tg-theme-button-color)",
-              color: "var(--tg-theme-button-text-color)",
+              height: '50px',
+              minWidth: '50px',
+              gap: '10px',
+              borderRadius: '10px',
+              padding: '15px 12px',
+              backgroundColor: "#0D0BCC",
+              color: "#FFFFFF",
+              border: 'none',
+              boxShadow: 'none',
+              fontFamily: 'Inter',
+              fontWeight: 600,
+              fontSize: '17px',
+              lineHeight: '22px',
+              letterSpacing: '-0.4px',
+              textAlign: 'center',
+              verticalAlign: 'middle',
             }}
           >
-            Подключиться
+            Найти
           </Button>
         </div>
-      </Card>
+      </div>
 
       {/* Последние квизы */}
       <div className="space-y-4">
@@ -147,10 +176,24 @@ const Main = () => {
         </p>
         <Button
           asChild
-          className="w-full"
-          style={{
-            backgroundColor: "var(--tg-theme-button-color)",
-            color: "var(--tg-theme-button-text-color)",
+          className="w-full mt-1"
+            style={{
+              height: '50px',
+              minWidth: '50px',
+              gap: '10px',
+              borderRadius: '10px',
+              padding: '15px 12px',
+              backgroundColor: "#0D0BCC",
+              color: "#FFFFFF",
+              border: 'none',
+              boxShadow: 'none',
+              fontFamily: 'Inter',
+              fontWeight: 600,
+              fontSize: '17px',
+              lineHeight: '22px',
+              letterSpacing: '-0.4px',
+              textAlign: 'center',
+              verticalAlign: 'middle',
           }}
         >
           <Link to="https://ваш-сайт.com" target="_blank">
