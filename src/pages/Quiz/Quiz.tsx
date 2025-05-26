@@ -131,15 +131,26 @@ const AllResults: FC<{
   const otherParticipants = participants.slice(3);
   const [firstPlace, secondPlace, thirdPlace] = winners;
 
+  const hasOtherParticipants = otherParticipants.length > 0;
+
   return (
     <div className="flex flex-col items-center min-h-screen p-6 bg-white">
       {/* Top 3 participants on podiums */}
-      <div className="flex justify-center items-end gap-4 mb-8 mt-10 w-full max-w-md" style={{ height: '180px' }}>
-        {/* 2nd place */}
+      <div
+        className={`flex justify-center items-end ${hasOtherParticipants ? 'w-full' : 'w-full max-w-md'} mb-8 mt-10`}
+        style={{ height: '220px' }}
+      >
+        {/* 2nd place - высота 80% от 1 места */}
         {secondPlace && (
-          <div className="flex flex-col items-center h-full">
+          <div
+            className="flex flex-col items-center mx-1"
+            style={{
+              width: '28%',
+              height: '80%'
+            }}
+          >
             <div
-              className="flex-1 w-24 flex flex-col items-center justify-end relative pt-8"
+              className="w-full h-full flex flex-col items-center justify-end relative pt-8"
               style={{
                 background: `
                   linear-gradient(180deg, #F64E60 0%, rgba(246, 78, 96, 0.476) 68.4%, rgba(246, 78, 96, 0) 100%),
@@ -169,11 +180,17 @@ const AllResults: FC<{
           </div>
         )}
 
-        {/* 1st place */}
+        {/* 1st place - самая высокая */}
         {firstPlace && (
-          <div className="flex flex-col items-center h-full">
+          <div
+            className="flex flex-col items-center mx-1"
+            style={{
+              width: '32%',
+              height: '100%'
+            }}
+          >
             <div
-              className="flex-1 w-32 flex flex-col items-center justify-end relative pt-10"
+              className="w-full h-full flex flex-col items-center justify-end relative pt-10"
               style={{
                 background: `
                   linear-gradient(180deg, #FF4072 0%, rgba(246, 78, 96, 0.476) 68.4%, rgba(255, 216, 220, 0.476) 100%)
@@ -201,11 +218,17 @@ const AllResults: FC<{
           </div>
         )}
 
-        {/* 3rd place */}
+        {/* 3rd place - высота 60% от 1 места */}
         {thirdPlace && (
-          <div className="flex flex-col items-center h-full">
+          <div
+            className="flex flex-col items-center mx-1"
+            style={{
+              width: '24%',
+              height: '60%'
+            }}
+          >
             <div
-              className="flex-1 w-20 flex flex-col items-center justify-end relative pt-8"
+              className="w-full h-full flex flex-col items-center justify-end relative pt-8"
               style={{
                 background: `
                   linear-gradient(180deg, #F64E60 0%, rgba(246, 78, 96, 0.476) 68.4%, rgba(246, 78, 96, 0) 100%),
@@ -237,43 +260,45 @@ const AllResults: FC<{
       </div>
 
       {/* Other participants list (starting from 4th place) */}
-      <div className="w-full max-w-md">
-        <ul className="space-y-3">
-          {otherParticipants.map((result, index) => {
-            const isCurrentUser = result.participant.user.id === currentUserId;
-            const position = index + 4;
+      {hasOtherParticipants && (
+        <div className="w-full max-w-md">
+          <ul className="space-y-3">
+            {otherParticipants.map((result, index) => {
+              const isCurrentUser = result.participant.user.id === currentUserId;
+              const position = index + 4;
 
-            return (
-              <li
-                key={index}
-                className="flex items-center gap-3 p-3 rounded-lg"
-                style={{ backgroundColor: '#F6F6F6' }}
-              >
-                <div
-                  className="flex items-center justify-center w-8 h-8 rounded-full"
-                  style={{ backgroundColor: '#FFFFFF' }}
+              return (
+                <li
+                  key={index}
+                  className="flex items-center gap-3 p-3 rounded-lg"
+                  style={{ backgroundColor: '#F6F6F6' }}
                 >
-                  <p className="font-manrope font-medium text-lg">
-                    {position}
-                  </p>
-                </div>
-                <Avatar className="w-12 h-12">
-                  <AvatarImage src={result.participant.user.photo_url} />
-                </Avatar>
-                <div className="flex-1">
-                  <p className="font-manrope font-medium text-lg">
-                    {result.participant.user.username}
-                    {isCurrentUser && <span className="ml-2 text-blue-600">(Вы)</span>}
-                  </p>
-                  <p className="font-manrope font-normal text-sm text-gray-600">
-                    {result.total_points} очков
-                  </p>
-                </div>
-              </li>
-            );
-          })}
-        </ul>
-      </div>
+                  <div
+                    className="flex items-center justify-center w-8 h-8 rounded-full"
+                    style={{ backgroundColor: '#FFFFFF' }}
+                  >
+                    <p className="font-manrope font-medium text-lg">
+                      {position}
+                    </p>
+                  </div>
+                  <Avatar className="w-12 h-12">
+                    <AvatarImage src={result.participant.user.photo_url} />
+                  </Avatar>
+                  <div className="flex-1">
+                    <p className="font-manrope font-medium text-lg">
+                      {result.participant.user.username}
+                      {isCurrentUser && <span className="ml-2 text-blue-600">(Вы)</span>}
+                    </p>
+                    <p className="font-manrope font-normal text-sm text-gray-600">
+                      {result.total_points} очков
+                    </p>
+                  </div>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      )}
     </div>
   );
 };
