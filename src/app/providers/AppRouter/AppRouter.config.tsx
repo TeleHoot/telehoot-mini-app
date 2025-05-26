@@ -1,4 +1,4 @@
-import { Navigate, Outlet, RouteObject } from "react-router-dom";
+import { Navigate, Outlet, RouteObject, useSearchParams } from "react-router-dom";
 import { createContext, FC, LazyExoticComponent, ReactNode, Suspense, useEffect, useState } from "react";
 import { auth, getMe, User } from "@entity/User";
 import { useMutation, useQuery, useQueryClient } from "react-query";
@@ -68,9 +68,13 @@ export const ProtectedRoute = (): ReactNode => {
 
 export const RedirectToMain = (): ReactNode => {
   const isUser = localStorage.getItem("user");
+  const [searchParams] = useSearchParams();
+  console.log(searchParams)
 
   if (!isUser)
     return <Navigate to={"/Welcome"} />;
+  else if (searchParams.get('tgWebAppStartParam'))
+    return <Navigate to={`/Quiz?quizCode=${searchParams.get('tgWebAppStartParam')}`} />;
   else
     return <Navigate to={"/Main"} />;
 };
@@ -81,17 +85,17 @@ export const ROUTES: RouteObject[] = [
     element: <ProtectedRoute />,
     children: [{
       path: "/",
-      element: <RedirectToMain/>,
+      element: <RedirectToMain />,
     }, {
-        path: "/Welcome",
-        element: ToLazy(Welcome),
-      },{
-        path: "/Main",
-        element: ToLazy(Main),
-      },{
-        path: "/Quiz",
-        element: ToLazy(Quiz),
-      },
+      path: "/Welcome",
+      element: ToLazy(Welcome),
+    }, {
+      path: "/Main",
+      element: ToLazy(Main),
+    }, {
+      path: "/Quiz",
+      element: ToLazy(Quiz),
+    },
     ],
   },
 ];
