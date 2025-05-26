@@ -4,7 +4,7 @@ import { Input } from "@shared/components/ui/input";
 import { Card } from "@shared/components/ui/card";
 import { use, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Scan } from "lucide-react";
+import { QrCode } from "lucide-react";
 import axios from "axios";
 import { AuthContext } from "@app/providers/AppRouter/AppRouter.config";
 import { useTelegram } from "@shared/hooks/useTelegram";
@@ -82,7 +82,7 @@ const Main = () => {
             color: "#0D0BCC",
           }}
         >
-          <Scan className="h-4 w-4 mr-1" />
+          <QrCode className="h-4 w-4 mr-1" />
           QR-код
         </Button>
       </div>
@@ -105,7 +105,6 @@ const Main = () => {
             className="w-full"
             style={{
               backgroundColor: "#FFFFFF",
-              color: "#707579",
               border: 'none',
               boxShadow: 'none',
               height: '40px',

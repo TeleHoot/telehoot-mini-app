@@ -243,3 +243,31 @@
     @apply bg-background text-foreground;
   }
 }
+
+@theme {
+  --color-bgauth: #E6EBFF;
+  --color_bg: #F1F1F1;
+
+  --font-manrope: "Manrope", sans-serif;
+  --font-inter: "Inter", sans-serif;
+}
+
+/* Стили для плейсхолдеров */
+::placeholder {
+  color: #A2ACB0 !important;
+  opacity: 1 !important; /* Firefox уменьшает opacity по умолчанию */
+  font-family: "Inter", sans-serif;
+  font-size: 14px;
+}
+
+:-ms-input-placeholder { /* Internet Explorer 10-11 */
+  color: #A2ACB0 !important;
+  font-family: "Inter", sans-serif;
+  font-size: 14px;
+}
+
+::-ms-input-placeholder { /* Microsoft Edge */
+  color: #A2ACB0 !important;
+  font-family: "Inter", sans-serif;
+  font-size: 14px;
+}

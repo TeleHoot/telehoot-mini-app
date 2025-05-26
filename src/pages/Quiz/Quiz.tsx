@@ -20,8 +20,8 @@ const PersonalResults: FC<{
   onNext: () => void;
 }> = ({ results, currentUserId, onNext }) => {
   const [showButton, setShowButton] = useState(false);
-  const currentUser = results.find(r => r.participant.user.id === currentUserId);
-  const currentUserPlace = results.findIndex(r => r.participant.user.id === currentUserId) + 1;
+  const currentUser = results?.find(r => r.participant?.user?.id === currentUserId);
+  const currentUserPlace = results?.findIndex(r => r.participant?.user?.id === currentUserId) + 1;
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -31,40 +31,87 @@ const PersonalResults: FC<{
     return () => clearTimeout(timer);
   }, []);
 
-  if (!currentUser) return null;
+  if (!currentUser || !currentUserPlace) return null;
+
+  const getMedalImage = () => {
+    switch (currentUserPlace) {
+      case 1: return "/gold.svg";
+      case 2: return "/silver.svg";
+      case 3: return "/bronze.svg";
+      default: return null;
+    }
+  };
+
+  const medalImage = getMedalImage();
+  const photoUrl = currentUser.participant?.user?.photo_url || "";
+  const username = currentUser.participant?.user?.username || "";
+  const totalPoints = currentUser.total_points || 0;
 
   return (
-    <div className="flex flex-col items-center min-h-screen p-6 bg-gray-50">
-      <h2 className="text-2xl font-semibold mb-6">Поздравляем!</h2>
+    <div className="flex flex-col items-center min-h-screen p-6">
+      {/* Quiz title placeholder */}
+      <p className="font-manrope font-bold text-center text-[#0D0BCC] mb-6">
+        Название квиза
+      </p>
 
-      <div className="bg-white p-6 rounded-lg shadow-md w-full max-w-md text-center">
-        <div className="flex flex-col items-center mb-4">
-          <Avatar className="w-24 h-24 mb-4">
-            <AvatarImage src={currentUser.participant.user.photo_url} />
+      <div className="flex flex-col items-center w-full max-w-md">
+        {/* Avatar with medal */}
+        <div className="relative mb-4">
+          <Avatar className="w-[194px] h-[194px] mt-10">
+            <AvatarImage src={photoUrl} />
           </Avatar>
-          <h3 className="text-xl font-bold">{currentUser.participant.user.username}</h3>
-          <p className="text-gray-600">Ваш результат: {currentUser.total_points} очков</p>
-        </div>
-
-        <div className={`p-4 rounded-lg transition-all duration-500 ${
-          currentUserPlace <= 3 ? "bg-gradient-to-r from-blue-100 to-purple-100" : "bg-gray-100"
-        }`}>
-          <p className="text-lg font-semibold">
-            🎉 Вы заняли {currentUserPlace} место!
-          </p>
-          {currentUserPlace <= 3 && (
-            <p className="mt-2 text-blue-600">
-              {currentUserPlace === 1 ? "Поздравляем с победой!" :
-                currentUserPlace === 2 ? "Отличный результат!" : "Хороший результат!"}
-            </p>
+          {medalImage && (
+            <img
+              src={medalImage}
+              alt="medal"
+              className="absolute -top-4.5 left-1/2 transform -translate-x-1/2 w-[88px] h-[88px]"
+            />
           )}
         </div>
+
+        {/* Place */}
+        <p className="font-manrope font-semibold text-[20px] text-center text-[#0D0BCC] mb-2">
+          {currentUserPlace} место
+        </p>
+
+        {/* Username */}
+        <p className="font-manrope font-semibold text-xl leading-5 text-[#18191B] mb-2">
+          {username}
+        </p>
+
+        {/* Points */}
+        <p className="font-manrope font-medium text-base leading-5 text-center text-[#18191B] mb-6">
+          {totalPoints} очков
+        </p>
+
+        {/* Congratulations */}
+        <p className="font-manrope font-semibold text-2xl leading-6 text-center text-[#0D0BCC] mb-6">
+          Поздравляем!
+        </p>
       </div>
 
       {showButton && (
         <Button
           onClick={onNext}
-          className="mt-6 bg-[#0D0BCC] hover:bg-[#0D0BCC]/90"
+          className="w-full mt-1"
+          style={{
+            height: '50px',
+            minWidth: '50px',
+            gap: '10px',
+            borderRadius: '10px',
+            padding: '15px 12px',
+            backgroundColor: "#0D0BCC",
+            color: "#FFFFFF",
+            border: 'none',
+            boxShadow: 'none',
+            fontFamily: 'Inter',
+            fontWeight: 600,
+            fontSize: '17px',
+            lineHeight: '22px',
+            letterSpacing: '-0.4px',
+            textAlign: 'center',
+            verticalAlign: 'middle',
+          }}
         >
           Посмотреть общие результаты
         </Button>
@@ -78,114 +125,154 @@ const AllResults: FC<{
   results: Results;
   currentUserId: string;
 }> = ({ results, currentUserId }) => {
-  const winners = results.filter(el => el.participant.role !== "host").slice(0, 3);
+  // Filter out host and prepare winners
+  const participants = results.filter(el => el.participant.role !== "host");
+  const winners = participants.slice(0, 3);
+  const otherParticipants = participants.slice(3);
   const [firstPlace, secondPlace, thirdPlace] = winners;
 
   return (
-    <div className="flex flex-col items-center min-h-screen p-6 bg-gray-50">
-      {/* Топ-3 участников */}
-      <div className="flex justify-center items-end gap-8 mb-12 w-full">
-        {/* 2 место */}
+    <div className="flex flex-col items-center min-h-screen p-6 bg-white">
+      {/* Top 3 participants on podiums */}
+      <div className="flex justify-center items-end gap-4 mb-8 mt-10 w-full max-w-md" style={{ height: '180px' }}>
+        {/* 2nd place */}
         {secondPlace && (
-          <div className="flex flex-col items-center">
-            <div className="h-48 w-40 rounded-t-lg flex flex-col items-center justify-end p-4 bg-gray-300">
-              <Avatar className="w-20 h-20 mb-2">
-                <AvatarImage src={secondPlace.participant.user.photo_url} />
-              </Avatar>
-              <span className="font-semibold">
-                {secondPlace.participant.user.username}
-              </span>
-              <span className="text-sm text-gray-600">
-                {secondPlace.total_points} pts
-              </span>
-            </div>
-            <div className="bg-gray-400 text-white px-4 py-2 rounded-b-lg w-full text-center">
-              2nd Place
+          <div className="flex flex-col items-center h-full">
+            <div
+              className="flex-1 w-24 flex flex-col items-center justify-end relative pt-8"
+              style={{
+                background: `
+                  linear-gradient(180deg, #F64E60 0%, rgba(246, 78, 96, 0.476) 68.4%, rgba(246, 78, 96, 0) 100%),
+                  linear-gradient(180deg, #0D0BCC 0%, #83A6FF 70.4%, rgba(54, 153, 255, 0) 100%)
+                `,
+                backgroundBlendMode: 'overlay, normal',
+                borderRadius: '8px 8px 0 0'
+              }}
+            >
+              <div className="absolute -top-4 flex flex-col items-center">
+                <div className="relative">
+                  <Avatar className="w-14 h-14">
+                    <AvatarImage src={secondPlace.participant.user.photo_url} />
+                  </Avatar>
+                  <img
+                    src="/silver.svg"
+                    alt="silver medal"
+                    className="absolute -top-8 left-1/2 transform -translate-x-1/2 w-10 h-10"
+                  />
+                </div>
+                <div className="mt-2 text-center">
+                  <p className="font-inter font-medium text-[16px] text-[#FFFFFF]">{secondPlace.participant.user.username}</p>
+                  <p className="font-inter text-[#FFFFFF] text-[14px]">{secondPlace.total_points} очков</p>
+                </div>
+              </div>
             </div>
           </div>
         )}
 
-        {/* 1 место */}
+        {/* 1st place */}
         {firstPlace && (
-          <div className="flex flex-col items-center">
-            <div className="h-64 w-48 rounded-t-lg flex flex-col items-center justify-end p-4 bg-yellow-400">
-              <Avatar className="w-24 h-24 mb-2">
-                <AvatarImage src={firstPlace.participant.user.photo_url} />
-              </Avatar>
-              <span className="font-semibold">
-                {firstPlace.participant.user.username}
-              </span>
-              <span className="text-sm text-gray-600">
-                {firstPlace.total_points} pts
-              </span>
-            </div>
-            <div className="bg-yellow-600 text-white px-4 py-2 rounded-b-lg w-full text-center">
-              1st Place
+          <div className="flex flex-col items-center h-full">
+            <div
+              className="flex-1 w-32 flex flex-col items-center justify-end relative pt-10"
+              style={{
+                background: `
+                  linear-gradient(180deg, #FF4072 0%, rgba(246, 78, 96, 0.476) 68.4%, rgba(255, 216, 220, 0.476) 100%)
+                `,
+                borderRadius: '8px 8px 0 0'
+              }}
+            >
+              <div className="absolute -top-4 flex flex-col items-center">
+                <div className="relative">
+                  <Avatar className="w-14 h-14">
+                    <AvatarImage src={firstPlace.participant.user.photo_url} />
+                  </Avatar>
+                  <img
+                    src="/gold.svg"
+                    alt="gold medal"
+                    className="absolute -top-8 left-1/2 transform -translate-x-1/2 w-10 h-10"
+                  />
+                </div>
+                <div className="mt-2 text-center">
+                  <p className="font-inter font-medium text-[16px] text-[#FFFFFF]">{firstPlace.participant.user.username}</p>
+                  <p className="font-inter text-[#FFFFFF] text-[14px]">{firstPlace.total_points} очков</p>
+                </div>
+              </div>
             </div>
           </div>
         )}
 
-        {/* 3 место */}
+        {/* 3rd place */}
         {thirdPlace && (
-          <div className="flex flex-col items-center">
-            <div className="h-40 w-36 rounded-t-lg flex flex-col items-center justify-end p-4 bg-amber-700">
-              <Avatar className="w-16 h-16 mb-2">
-                <AvatarImage src={thirdPlace.participant.user.photo_url} />
-              </Avatar>
-              <span className="font-semibold text-white">
-                {thirdPlace.participant.user.username}
-              </span>
-              <span className="text-sm text-gray-200">
-                {thirdPlace.total_points} pts
-              </span>
-            </div>
-            <div className="bg-amber-800 text-white px-4 py-2 rounded-b-lg w-full text-center">
-              3rd Place
+          <div className="flex flex-col items-center h-full">
+            <div
+              className="flex-1 w-20 flex flex-col items-center justify-end relative pt-8"
+              style={{
+                background: `
+                  linear-gradient(180deg, #F64E60 0%, rgba(246, 78, 96, 0.476) 68.4%, rgba(246, 78, 96, 0) 100%),
+                  linear-gradient(180deg, #8950FC 0%, rgba(137, 80, 252, 0.391) 71.9%, rgba(137, 80, 252, 0) 100%)
+                `,
+                backgroundBlendMode: 'overlay, normal',
+                borderRadius: '8px 8px 0 0'
+              }}
+            >
+              <div className="absolute -top-4 flex flex-col items-center">
+                <div className="relative">
+                  <Avatar className="w-14 h-14">
+                    <AvatarImage src={thirdPlace.participant.user.photo_url} />
+                  </Avatar>
+                  <img
+                    src="/bronze.svg"
+                    alt="bronze medal"
+                    className="absolute -top-8 left-1/2 transform -translate-x-1/2 w-10 h-10"
+                  />
+                </div>
+                <div className="mt-2 text-center">
+                  <p className="font-inter font-medium text-[16px] text-[#FFFFFF]">{thirdPlace.participant.user.username}</p>
+                  <p className="font-inter text-[#FFFFFF] text-[14px]">{thirdPlace.total_points} очков</p>
+                </div>
+              </div>
             </div>
           </div>
         )}
       </div>
 
-      {/* Таблица всех участников */}
-      <div className="w-full max-w-4xl mb-8">
-        <h2 className="text-2xl font-semibold mb-4 text-center">Все участники</h2>
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead className="w-[100px]">Место</TableHead>
-              <TableHead>Участник</TableHead>
-              <TableHead>Очки</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {results.map((result, index) => {
-              const isCurrentUser = result.participant.user.id === currentUserId;
-              const isTop3 = index < 3;
+      {/* Other participants list (starting from 4th place) */}
+      <div className="w-full max-w-md">
+        <ul className="space-y-3">
+          {otherParticipants.map((result, index) => {
+            const isCurrentUser = result.participant.user.id === currentUserId;
+            const position = index + 4;
 
-              return (
-                <TableRow
-                  key={index}
-                  className={
-                    isCurrentUser ? "bg-blue-50 font-medium" :
-                      isTop3 ? "bg-amber-50" : ""
-                  }
+            return (
+              <li
+                key={index}
+                className="flex items-center gap-3 p-3 rounded-lg"
+                style={{ backgroundColor: '#F6F6F6' }}
+              >
+                <div
+                  className="flex items-center justify-center w-8 h-8 rounded-full"
+                  style={{ backgroundColor: '#FFFFFF' }}
                 >
-                  <TableCell className="font-medium">{index + 1}</TableCell>
-                  <TableCell>
-                    <div className="flex items-center gap-2">
-                      <Avatar className="w-8 h-8">
-                        <AvatarImage src={result.participant.user.photo_url} />
-                      </Avatar>
-                      <span>{result.participant.user.username}</span>
-                      {isCurrentUser && <span className="ml-2">(Вы)</span>}
-                    </div>
-                  </TableCell>
-                  <TableCell>{result.total_points}</TableCell>
-                </TableRow>
-              );
-            })}
-          </TableBody>
-        </Table>
+                  <p className="font-manrope font-medium text-lg">
+                    {position}
+                  </p>
+                </div>
+                <Avatar className="w-12 h-12">
+                  <AvatarImage src={result.participant.user.photo_url} />
+                </Avatar>
+                <div className="flex-1">
+                  <p className="font-manrope font-medium text-lg">
+                    {result.participant.user.username}
+                    {isCurrentUser && <span className="ml-2 text-blue-600">(Вы)</span>}
+                  </p>
+                  <p className="font-manrope font-normal text-sm text-gray-600">
+                    {result.total_points} очков
+                  </p>
+                </div>
+              </li>
+            );
+          })}
+        </ul>
       </div>
     </div>
   );
@@ -373,7 +460,7 @@ const Quiz: FC = () => {
   }, [setMessageHandlers, navigate]);
 
   const join = () => {
-    send(JSON.stringify({ type: "join", username: userName || "@..." }));
+    send(JSON.stringify({ type: "join", username: userName || user.username }));
   };
 
   const handleAnswerSelect = (answers: Answer[]) => {
@@ -387,30 +474,38 @@ const Quiz: FC = () => {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen bg-white p-6">
         <div className="w-full max-w-md space-y-6">
-          <h1 className="text-3xl font-bold text-center text-[#0D0BCC] mb-8 font-manrope">
-            Присоединиться к квизу
-          </h1>
+          <p className="text-[20px] font-semibold text-center text-[#18191B] mb-2 font-inter">
+            Квиз скоро начнется
+          </p>
+          <p className="text-[16px] text-medium text-center text-[#707579] mb-4 font-inter">
+            Как вас видеть организатору?
+          </p>
           <Input
             onChange={e => setUserName(e.target.value)}
             value={userName}
-            placeholder="Введите ваш никнейм"
-            className="text-xl p-4 border-2 border-[#0D0BCC] rounded-lg"
+            placeholder={user.username}
+            className="text-xl p-4 border-2 h-[40px] rounded-lg text-[14px] bg-[#FFFFFF] font-inter"
+            style={{
+                backgroundColor: "#FFFFFF",
+                background: "#FFFFFF"
+          }}
           />
-          <p className="text-lg text-center text-gray-600 mb-4">
-            Введите ваш никнейм для участия в квизе
-          </p>
 
           {!isJoin ? (
             <Button
               onClick={join}
-              className="w-full py-6 text-xl bg-[#0D0BCC] hover:bg-[#0D0BCC]/90"
+              className="w-full py-6 bg-[#0D0BCC] h-[50px] font-inter text-[#FFFFFF]"
             >
-              Присоединиться
+              <span className="text-[#FFFFFF] text-[17px] font-semibold">Присоединиться</span>
             </Button>
           ) : (
-            <div className="text-center text-xl text-[#0D0BCC] p-8">
-              Ожидание начала квиза...
-            </div>
+            <Button
+              onClick={join}
+              disabled
+              className="w-full py-6 text-xl bg-transparent h-[50px] border-#0D0BCC"
+            >
+              <span className="text-[#0D0BCC] text-[17px] font-semibold">Ожидаем начало...</span>
+            </Button>
           )}
         </div>
       </div>
