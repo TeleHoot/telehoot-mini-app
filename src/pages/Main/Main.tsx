@@ -3,10 +3,11 @@ import { Button } from "@shared/components/ui/button";
 import { Input } from "@shared/components/ui/input";
 import { use, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { QrCode } from "lucide-react";
-import axios from "axios";
+import { QrCode, Trophy } from "lucide-react";
 import { AuthContext } from "@app/providers/AppRouter/AppRouter.config";
 import { useTelegram } from "@shared/hooks/useTelegram";
+import { getSessions } from "@entity/Session";
+import { Card } from "@shared/components/ui/card";
 
 type Quiz = {
   id: string;
@@ -14,6 +15,23 @@ type Quiz = {
   description: string;
   code: string;
 };
+
+function getQuestionsWord(count: number): string {
+  if (count % 100 >= 11 && count % 100 <= 14) {
+    return 'вопросов';
+  }
+
+  switch (count % 10) {
+    case 1:
+      return 'вопрос';
+    case 2:
+    case 3:
+    case 4:
+      return 'вопроса';
+    default:
+      return 'вопросов';
+  }
+}
 
 const siteLink = import.meta.env.VITE_SITE_LINK;
 
@@ -25,13 +43,12 @@ const Main = () => {
   const navigate = useNavigate();
 
   // Получаем последние квизы
-  const { data: quizzes } = useQuery<Quiz[]>({
+  const { data: sessionsData } = useQuery({
     queryKey: ["quizzes"],
-    queryFn: async () => {
-      const response = await axios.get("/api/quizzes");
-      return response.data;
-    },
+    queryFn: ()=>getSessions(2),
   });
+
+  const sessions = sessionsData?.data;
 
   const handleJoinQuiz = async () => {
     if (quizCode.length === 4) {
@@ -154,21 +171,28 @@ const Main = () => {
       {/* Последние квизы */}
       <div className="space-y-4">
         <h3 className="font-semibold">Последние квизы</h3>
-        {quizzes?.length ? (
+        {sessions?.length ? (
           <div className="space-y-3">
-            {/*quizzes?.map((quiz) => (
-              <Card key={quiz.id} className="p-4" style={{
-                backgroundColor: "var(--tg-theme-secondary-bg-color)",
-              }}>
-                <h4 className="font-medium">{quiz.title}</h4>
-                <p className="text-sm text-muted-foreground mt-1" style={{ color: "var(--tg-theme-hint-color)" }}>
-                  {quiz.description}
-                </p>
-                <p className="text-xs mt-2" style={{ color: "var(--tg-theme-link-color)" }}>
-                  Код: {quiz.code}
-                </p>
+            {sessions?.map((session) => (
+              <Card key={session.id} className="p-4" style={{ backgroundColor: "white" }}>
+                <div className="flex justify-between items-center">
+                  <div>
+                    <h4 className="font-medium">{session.quiz.name}</h4>
+                    <p className="text-sm text-muted-foreground mt-1" style={{ color: "var(--tg-theme-hint-color)" }}>
+                      {session.quiz.questions_count} {getQuestionsWord(session.quiz.questions_count)}
+                    </p>
+                  </div>
+                  <Link
+                    href={`/results?id=${session.id}`}
+                    className="flex items-center gap-2 px-3 py-2 rounded-md"
+                    style={{color: '#0D0BCC'}}
+                  >
+                    <Trophy className="w-4 h-4" />
+                    <span>Результаты</span>
+                  </Link>
+                </div>
               </Card>
-            ))*/}
+            ))}
           </div>
         ) : (
           <p className="text-muted-foreground" style={{ color: "var(--tg-theme-hint-color)" }}>
