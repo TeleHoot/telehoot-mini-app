@@ -21,6 +21,8 @@ export default ({ mode }) => {
     server: {
       allowedHosts: [
         "mini-app.frp.deti-durova.ru",
+        "tma-stalinidze.frp.deti-durova.ru",
+        "tma.deti-durova.online"
       ],
     },
     plugins: [
