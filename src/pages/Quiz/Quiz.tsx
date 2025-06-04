@@ -3,7 +3,6 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { useWebSocket } from "@shared/hooks/useWebsocet";
 import { Button } from "@shared/components/ui/button";
 import { Avatar, AvatarImage } from "@shared/components/ui/avatar";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@shared/components/ui/table";
 import { Participant } from "@entity/Participant";
 import { AuthContext } from "@app/providers/AppRouter/AppRouter.config";
 import { Answer, Question } from "@entity/Question";
@@ -35,10 +34,14 @@ const PersonalResults: FC<{
 
   const getMedalImage = () => {
     switch (currentUserPlace) {
-      case 1: return "/gold.svg";
-      case 2: return "/silver.svg";
-      case 3: return "/bronze.svg";
-      default: return null;
+      case 1:
+        return "/gold.svg";
+      case 2:
+        return "/silver.svg";
+      case 3:
+        return "/bronze.svg";
+      default:
+        return null;
     }
   };
 
@@ -46,10 +49,13 @@ const PersonalResults: FC<{
   const photoUrl = currentUser.participant?.user?.photo_url || "";
   const username = currentUser.participant?.user?.username || "";
   const totalPoints = currentUser.total_points || 0;
+  const navigate = useNavigate();
 
   return (
     <div className="flex flex-col items-center min-h-screen p-6">
       {/* Quiz title placeholder */}
+      <Button onClick={() => navigate("/Main")}>{"<"}</Button>
+
       <p className="font-manrope font-bold text-center text-[#0D0BCC] mb-6">
         Название квиза
       </p>
@@ -95,22 +101,22 @@ const PersonalResults: FC<{
           onClick={onNext}
           className="w-full mt-1"
           style={{
-            height: '50px',
-            minWidth: '50px',
-            gap: '10px',
-            borderRadius: '10px',
-            padding: '15px 12px',
+            height: "50px",
+            minWidth: "50px",
+            gap: "10px",
+            borderRadius: "10px",
+            padding: "15px 12px",
             backgroundColor: "#0D0BCC",
             color: "#FFFFFF",
-            border: 'none',
-            boxShadow: 'none',
-            fontFamily: 'Inter',
+            border: "none",
+            boxShadow: "none",
+            fontFamily: "Inter",
             fontWeight: 600,
-            fontSize: '17px',
-            lineHeight: '22px',
-            letterSpacing: '-0.4px',
-            textAlign: 'center',
-            verticalAlign: 'middle',
+            fontSize: "17px",
+            lineHeight: "22px",
+            letterSpacing: "-0.4px",
+            textAlign: "center",
+            verticalAlign: "middle",
           }}
         >
           Посмотреть общие результаты
@@ -132,21 +138,24 @@ const AllResults: FC<{
   const [firstPlace, secondPlace, thirdPlace] = winners;
 
   const hasOtherParticipants = otherParticipants.length > 0;
+  const navigate = useNavigate();
 
   return (
     <div className="flex flex-col items-center min-h-screen p-6 bg-white">
       {/* Top 3 participants on podiums */}
+      <Button onClick={() => navigate("/Main")}>{"<"}</Button>
+
       <div
-        className={`flex justify-center items-end ${hasOtherParticipants ? 'w-full' : 'w-full max-w-md'} mb-8 mt-10`}
-        style={{ height: '220px' }}
+        className={`flex justify-center items-end ${hasOtherParticipants ? "w-full" : "w-full max-w-md"} mb-8 mt-10`}
+        style={{ height: "220px" }}
       >
         {/* 2nd place - высота 80% от 1 места */}
         {secondPlace && (
           <div
             className="flex flex-col items-center mx-1"
             style={{
-              width: '28%',
-              height: '80%'
+              width: "28%",
+              height: "80%",
             }}
           >
             <div
@@ -156,8 +165,8 @@ const AllResults: FC<{
                   linear-gradient(180deg, #F64E60 0%, rgba(246, 78, 96, 0.476) 68.4%, rgba(246, 78, 96, 0) 100%),
                   linear-gradient(180deg, #0D0BCC 0%, #83A6FF 70.4%, rgba(54, 153, 255, 0) 100%)
                 `,
-                backgroundBlendMode: 'overlay, normal',
-                borderRadius: '8px 8px 0 0'
+                backgroundBlendMode: "overlay, normal",
+                borderRadius: "8px 8px 0 0",
               }}
             >
               <div className="absolute -top-4 flex flex-col items-center">
@@ -172,7 +181,8 @@ const AllResults: FC<{
                   />
                 </div>
                 <div className="mt-2 text-center">
-                  <p className="font-inter font-medium text-[16px] text-[#FFFFFF]">{secondPlace.participant.user.username}</p>
+                  <p
+                    className="font-inter font-medium text-[16px] text-[#FFFFFF]">{secondPlace.participant.user.username}</p>
                   <p className="font-inter text-[#FFFFFF] text-[14px]">{secondPlace.total_points} очков</p>
                 </div>
               </div>
@@ -185,8 +195,8 @@ const AllResults: FC<{
           <div
             className="flex flex-col items-center mx-1"
             style={{
-              width: '32%',
-              height: '100%'
+              width: "32%",
+              height: "100%",
             }}
           >
             <div
@@ -195,7 +205,7 @@ const AllResults: FC<{
                 background: `
                   linear-gradient(180deg, #FF4072 0%, rgba(246, 78, 96, 0.476) 68.4%, rgba(255, 216, 220, 0.476) 100%)
                 `,
-                borderRadius: '8px 8px 0 0'
+                borderRadius: "8px 8px 0 0",
               }}
             >
               <div className="absolute -top-4 flex flex-col items-center">
@@ -210,7 +220,8 @@ const AllResults: FC<{
                   />
                 </div>
                 <div className="mt-2 text-center">
-                  <p className="font-inter font-medium text-[16px] text-[#FFFFFF]">{firstPlace.participant.user.username}</p>
+                  <p
+                    className="font-inter font-medium text-[16px] text-[#FFFFFF]">{firstPlace.participant.user.username}</p>
                   <p className="font-inter text-[#FFFFFF] text-[14px]">{firstPlace.total_points} очков</p>
                 </div>
               </div>
@@ -223,8 +234,8 @@ const AllResults: FC<{
           <div
             className="flex flex-col items-center mx-1"
             style={{
-              width: '24%',
-              height: '60%'
+              width: "24%",
+              height: "60%",
             }}
           >
             <div
@@ -234,8 +245,8 @@ const AllResults: FC<{
                   linear-gradient(180deg, #F64E60 0%, rgba(246, 78, 96, 0.476) 68.4%, rgba(246, 78, 96, 0) 100%),
                   linear-gradient(180deg, #8950FC 0%, rgba(137, 80, 252, 0.391) 71.9%, rgba(137, 80, 252, 0) 100%)
                 `,
-                backgroundBlendMode: 'overlay, normal',
-                borderRadius: '8px 8px 0 0'
+                backgroundBlendMode: "overlay, normal",
+                borderRadius: "8px 8px 0 0",
               }}
             >
               <div className="absolute -top-4 flex flex-col items-center">
@@ -250,7 +261,8 @@ const AllResults: FC<{
                   />
                 </div>
                 <div className="mt-2 text-center">
-                  <p className="font-inter font-medium text-[16px] text-[#FFFFFF]">{thirdPlace.participant.user.username}</p>
+                  <p
+                    className="font-inter font-medium text-[16px] text-[#FFFFFF]">{thirdPlace.participant.user.username}</p>
                   <p className="font-inter text-[#FFFFFF] text-[14px]">{thirdPlace.total_points} очков</p>
                 </div>
               </div>
@@ -271,11 +283,11 @@ const AllResults: FC<{
                 <li
                   key={index}
                   className="flex items-center gap-3 p-3 rounded-lg"
-                  style={{ backgroundColor: '#F6F6F6' }}
+                  style={{ backgroundColor: "#F6F6F6" }}
                 >
                   <div
                     className="flex items-center justify-center w-8 h-8 rounded-full"
-                    style={{ backgroundColor: '#FFFFFF' }}
+                    style={{ backgroundColor: "#FFFFFF" }}
                   >
                     <p className="font-manrope font-medium text-lg">
                       {position}
@@ -498,6 +510,8 @@ const Quiz: FC = () => {
   if (stage === "start") {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen bg-white p-6">
+        <Button onClick={() => navigate("/Main")}>{"<"}</Button>
+
         <div className="w-full max-w-md space-y-6">
           <p className="text-[20px] font-semibold text-center text-[#18191B] mb-2 font-inter">
             Квиз скоро начнется
@@ -511,9 +525,9 @@ const Quiz: FC = () => {
             placeholder={user.username}
             className="text-xl p-4 border-2 h-[40px] rounded-lg text-[14px] bg-[#FFFFFF] font-inter"
             style={{
-                backgroundColor: "#FFFFFF",
-                background: "#FFFFFF"
-          }}
+              backgroundColor: "#FFFFFF",
+              background: "#FFFFFF",
+            }}
           />
 
           {!isJoin ? (

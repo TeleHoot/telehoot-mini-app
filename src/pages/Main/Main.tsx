@@ -75,6 +75,8 @@ const Main = () => {
     );
   };
 
+  console.log(authContext)
+  
   return (
     <div className="p-4 space-y-6 bg-[#F1F1F1]" style={{
       minHeight: "100vh",
