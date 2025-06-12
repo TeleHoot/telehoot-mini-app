@@ -74,26 +74,6 @@ const Results = () => {
       />
     );
   }
-
-  return (
-    <>
-      {!showAllParticipants ? (
-        <QuizResults
-          results={sessionResultsData.data}
-          quizTitle={sessionData.data.quiz.name}
-          onNext={() => setShowAllParticipants(true)}
-        />
-      ) : (
-        <AllParticipants
-          results={sessionResultsData.data}
-          quizTitle={sessionData.data.quiz.name}
-          sessionId={sessionData.data.id}
-          currentOrganizationId={organizationId}
-          quizId={quizId}
-        />
-      )}
-    </>
-  );
 };
 
 export default Results;
