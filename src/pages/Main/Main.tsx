@@ -16,7 +16,7 @@ type Quiz = {
   code: string;
 };
 
-function getQuestionsWord(count: number): string {
+export function getQuestionsWord(count: number): string {
   if (count % 100 >= 11 && count % 100 <= 14) {
     return 'вопросов';
   }
@@ -75,8 +75,6 @@ const Main = () => {
     );
   };
 
-  console.log(authContext)
-  
   return (
     <div className="p-4 space-y-6 bg-[#F1F1F1]" style={{
       minHeight: "100vh",
@@ -185,7 +183,7 @@ const Main = () => {
                     </p>
                   </div>
                   <Link
-                    href={`/results?id=${session.id}`}
+                    to={`/results?sessionId=${session.id}&quizId=${session.quiz.id}&organizationId=${session.quiz.organization.id}`}
                     className="flex items-center gap-2 px-3 py-2 rounded-md"
                     style={{color: '#0D0BCC'}}
                   >

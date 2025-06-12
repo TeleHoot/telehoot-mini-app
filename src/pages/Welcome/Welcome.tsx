@@ -23,7 +23,7 @@ const Welcome: FC<TMain> = () => {
         <div className="w-full flex justify-end pr-1">
           <img
             src="/welcome-image.png"
-            alt="Welcome"
+            alt="Results"
             className="h-[381px] max-w-none object-contain object-left"
           />
         </div>

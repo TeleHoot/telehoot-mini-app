@@ -13,7 +13,7 @@ type Stages = "start" | "counter" | "questions" | "personalResults" | "allResult
 type Results = Array<{ participant: Participant, total_points: number }>;
 
 // Персональные результаты
-const PersonalResults: FC<{
+export const PersonalResults: FC<{
   results: Results;
   currentUserId: string;
   onNext: () => void;
@@ -54,8 +54,9 @@ const PersonalResults: FC<{
   return (
     <div className="flex flex-col items-center min-h-screen p-6">
       {/* Quiz title placeholder */}
-      <Button onClick={() => navigate("/Main")}>{"<"}</Button>
-
+      <div className="absolute top-4 left-4">
+        <Button onClick={() => navigate("/Main")}>{"<"}</Button>
+      </div>
       <p className="font-manrope font-bold text-center text-[#0D0BCC] mb-6">
         Название квиза
       </p>
@@ -127,7 +128,7 @@ const PersonalResults: FC<{
 };
 
 // Общие результаты
-const AllResults: FC<{
+export const AllResults: FC<{
   results: Results;
   currentUserId: string;
 }> = ({ results, currentUserId }) => {
@@ -143,8 +144,9 @@ const AllResults: FC<{
   return (
     <div className="flex flex-col items-center min-h-screen p-6 bg-white">
       {/* Top 3 participants on podiums */}
-      <Button onClick={() => navigate("/Main")}>{"<"}</Button>
-
+      <div className="absolute top-4 left-4">
+        <Button onClick={() => navigate("/Main")}>{"<"}</Button>
+      </div>
       <div
         className={`flex justify-center items-end ${hasOtherParticipants ? "w-full" : "w-full max-w-md"} mb-8 mt-10`}
         style={{ height: "220px" }}
@@ -510,8 +512,9 @@ const Quiz: FC = () => {
   if (stage === "start") {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen bg-white p-6">
-        <Button onClick={() => navigate("/Main")}>{"<"}</Button>
-
+        <div className="absolute top-4 left-4">
+          <Button onClick={() => navigate("/Main")}>{"<"}</Button>
+        </div>
         <div className="w-full max-w-md space-y-6">
           <p className="text-[20px] font-semibold text-center text-[#18191B] mb-2 font-inter">
             Квиз скоро начнется

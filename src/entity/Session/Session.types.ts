@@ -11,3 +11,9 @@ export type Session = {
   created_at: string,
   updated_at: string,
 }
+
+
+export type CreateSessionData = {
+  organizationId: string;
+  quizId: string;
+}
